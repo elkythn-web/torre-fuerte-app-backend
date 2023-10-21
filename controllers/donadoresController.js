@@ -1,9 +1,44 @@
 import Donadores from "../models/Donadores.js";
 
 const ObtenerDonadores = async (req, res) => {
-    const donadores = await Donadores.find();
-    res.json(donadores);
+    try {
+      const donadores = await Donadores.find().select("-__v -createdAt -updatedAt ");
+  
+      // Formatear las fechas en cada documento
+      const donadoresFormateados = donadores.map(donador => {
+        // Formatear la fecha a "AAAA-MM-DD"
+        const fechaFormateada = donador.fecha.toISOString().slice(0, 10);
+  
+        // Crear un nuevo objeto con la fecha formateada
+        return { ...donador._doc, fecha: fechaFormateada };
+      });
+  
+      res.json(donadoresFormateados);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Ocurrió un error al obtener los donadores' });
+    }
 };
+
+const ObtenerUltimosTresDonadores = async (req, res) => {
+    try {
+      const donadores = await Donadores.find().sort({ fecha: -1 }).limit(3).select("-__v -createdAt -updatedAt ");
+  
+      // Formatear las fechas en cada documento
+      const donadoresFormateados = donadores.map(donador => {
+        // Formatear la fecha a "AAAA-MM-DD"
+        const fechaFormateada = donador.fecha.toISOString().slice(0, 10);
+  
+        // Crear un nuevo objeto con la fecha formateada
+        return { ...donador._doc, fecha: fechaFormateada };
+      });
+  
+      res.json(donadoresFormateados);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Ocurrió un error al obtener los donadores' });
+    }
+}
 
 const CrearDonador = async (req, res) => {
     const { nombre, apellido, telefono, cantidad, fecha, comentario } =  req.body;
@@ -79,5 +114,6 @@ export {
     CrearDonador,
     ObtenerDonador,
     ActualizarDonador,
-    EliminarDonador
+    EliminarDonador,
+    ObtenerUltimosTresDonadores
 }

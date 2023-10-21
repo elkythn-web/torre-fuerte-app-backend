@@ -11,7 +11,19 @@ dotenv.config();
 
 conectarDB();
 
-app.use(cors())
+const whitelist = [process.env.FRONTEND_URL]
+const corsOptions = {
+    origin: function (origin, callback) {
+      if (whitelist.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Error de Cors"));
+      }
+    },
+  }
+app.use(cors(corsOptions));
+
+// app.use(cors())
 
 //Rutas
 app.use('/api/donadores', donadorRoutes);

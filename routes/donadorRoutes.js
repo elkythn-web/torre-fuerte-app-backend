@@ -4,7 +4,8 @@ import {
     CrearDonador,
     ObtenerDonador,
     ActualizarDonador,
-    EliminarDonador
+    EliminarDonador,
+    ObtenerUltimosTresDonadores
 } from "../controllers/donadoresController.js";
 
 const router = express.Router();
@@ -12,6 +13,9 @@ const router = express.Router();
 router.route('/')
     .get(ObtenerDonadores)
     .post(CrearDonador);
+
+router.route('/ultimos')
+    .get(ObtenerUltimosTresDonadores);
 
 router.route('/:id')
     .get(ObtenerDonador)
